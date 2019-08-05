@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title> Chatroom Simulator </title>
+    <script src="https://ajax.googleapis.com/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+</head>
+<body on>
+<h3>NO Message Type Here!... </h3>
+<div class="message_holder"></div>
+<form action="" method="POST">
+    <input type="text" class="username" placeholder="username"> <br> <br>
+    <textarea class="message" cols="22" rows="10" placeholder="comment here"></textarea><br> <br>
+    <input type="submit">
+</form>
+
+<script>
+    var socket = io.connect("http://" + document.domain + ":" + location.port);
+    socket.on("connect" , function () {
+        socket.emit("my event" , function () {
+            data : "user connected"
+        })
+        var form = $("form").on("submit" , function(e) {
+            e.preventDefault();
+            user_name = $("input.username").val();
+            user_input = $(textarea.message).val();
+            socket.emit("my event" , function(){
+                user_name : user_name;
+                message : user_input
+            })
+            $("input.message").val("").focus()
+        })
+        socket.on("my respose" , function(msg){
+            console.log(msg);
+            if (typeof msg.user_name!="undefined") {
+                $("h3").remove();
+                $("div.message_holder").append("<div><b style='color : red'>" + msg.user_name + ':' + "</b>" + msg.message + "</div>")                
+            }
+        })
+    })
+</script>
+</body>
+</html>
